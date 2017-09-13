@@ -44,7 +44,7 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public int getCount() {
 
-        return this.mBitmapList.size();
+        return mBitmapList.size();
     }
 
     /**
@@ -89,12 +89,15 @@ public class ImageAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
-            LayoutInflater inflater = LayoutInflater.from(this.mContext);
-            convertView = inflater.inflate(R.layout.image, parent, false);
+            convertView = new ImageView(mContext);
+            convertView.setLayoutParams(new GridView.LayoutParams(148, 148));
             ((ImageView) convertView).setScaleType(ImageView.ScaleType.CENTER_CROP);
+//            LayoutInflater inflater = LayoutInflater.from(mContext);
+//            convertView = inflater.inflate(R.layout.image, parent, false);
+//            ((ImageView) convertView).setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 
-        ((ImageView) convertView).setImageBitmap(this.mBitmapList.get(position));
+        ((ImageView) convertView).setImageBitmap(mBitmapList.get(position));
         return convertView;
     }
 }
