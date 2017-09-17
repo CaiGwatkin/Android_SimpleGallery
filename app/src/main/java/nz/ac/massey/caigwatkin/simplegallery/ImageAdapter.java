@@ -91,10 +91,10 @@ public class ImageAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = new ImageView(mContext);
             convertView.setLayoutParams(new GridView.LayoutParams(148, 148));
-            ((ImageView) convertView).setScaleType(ImageView.ScaleType.CENTER_CROP);
+            ((ImageView) convertView).setScaleType(ImageView.ScaleType.FIT_CENTER);
 //            LayoutInflater inflater = LayoutInflater.from(mContext);
 //            convertView = inflater.inflate(R.layout.image, parent, false);
-//            ((ImageView) convertView).setScaleType(ImageView.ScaleType.CENTER_CROP);
+//            ((ImageView) convertView).setScaleType(ImageView.ScaleType.FIT_CENTER);
         }
 
         ((ImageView) convertView).setImageBitmap(mBitmapList.get(position));

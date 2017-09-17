@@ -30,7 +30,16 @@ public class MainActivity extends Activity {
         mThreadHandler = new Handler();
         mContext = this;
 
-        new Thread(new Runnable() {
+        getImages();
+        mImageGridView.setAdapter(new ImageAdapter(mContext, mBitmapList));
+
+
+        //MediaStore.Images.Media.EXERNAL_CONTENT_URI // URI for internal storage on device
+    }
+
+    private void getImages() {
+
+        Thread thread = new Thread(new Runnable() {
             public void run() {
                 try {
                     for(int i = 0; i < 10; i++) {
@@ -39,12 +48,14 @@ public class MainActivity extends Activity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                mThreadHandler.post(new UpdateUIImages(mContext, mImageGridView, mBitmapList));
             }
-        }).start();
-
-
-        //MediaStore.Images.Media.EXERNAL_CONTENT_URI // URI for internal storage on device
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private Bitmap urlImageToBitmap(String imageUrl) throws Exception {
