@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.widget.GridView;
 import android.widget.ImageView;
 
@@ -16,8 +18,6 @@ public class MainActivity extends Activity {
 
     private GridView mImageGridView;
     private ArrayList<Bitmap> mBitmapList;
-    private Handler mThreadHandler;
-    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +27,10 @@ public class MainActivity extends Activity {
 
         mImageGridView = (GridView) findViewById(R.id.grid_view_images);
         mBitmapList = new ArrayList<>();
-        mThreadHandler = new Handler();
-        mContext = this;
+        Context context = this;
 
         getImages();
-        mImageGridView.setAdapter(new ImageAdapter(mContext, mBitmapList));
+        mImageGridView.setAdapter(new ImageAdapter(context, mBitmapList));
 
 
         //MediaStore.Images.Media.EXERNAL_CONTENT_URI // URI for internal storage on device

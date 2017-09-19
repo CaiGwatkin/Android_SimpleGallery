@@ -21,8 +21,8 @@ import java.util.ArrayList;
  */
 public class ImageAdapter extends BaseAdapter {
 
-    private Context mContext;
     private ArrayList<Bitmap> mBitmapList;
+    LayoutInflater mLayoutInflater;
 
     /**
      * Constructs object using context and bitmap list.
@@ -32,7 +32,7 @@ public class ImageAdapter extends BaseAdapter {
      */
     public ImageAdapter(Context context, ArrayList<Bitmap> bitmapList) {
 
-        mContext = context;
+        mLayoutInflater = LayoutInflater.from(context);
         mBitmapList = bitmapList;
     }
 
@@ -57,7 +57,7 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public Object getItem(int position) {
 
-        return null;
+        return mBitmapList.get(position);
     }
 
     /**
@@ -69,7 +69,7 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
 
-        return 0;
+        return position;
     }
 
     /**
@@ -88,16 +88,19 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        ImageView imageView;
         if (convertView == null) {
-            convertView = new ImageView(mContext);
-            convertView.setLayoutParams(new GridView.LayoutParams(148, 148));
-            ((ImageView) convertView).setScaleType(ImageView.ScaleType.FIT_CENTER);
-//            LayoutInflater inflater = LayoutInflater.from(mContext);
-//            convertView = inflater.inflate(R.layout.image, parent, false);
-//            ((ImageView) convertView).setScaleType(ImageView.ScaleType.FIT_CENTER);
+            convertView = mLayoutInflater.inflate(R.layout.grid_cell, null);
+            imageView = (ImageView) convertView.findViewById(R.id.image_thumb);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
+        else {
+            imageView = (ImageView) convertView.getTag();
         }
 
-        ((ImageView) convertView).setImageBitmap(mBitmapList.get(position));
+        if (imageView != null) {
+            imageView.setImageBitmap(mBitmapList.get(position));
+        }
         return convertView;
     }
 }
