@@ -1,3 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SimpleGallery</string>
+    <string name="essential_permission_required">Essential permission required</string>
+    <string name="essential_permission_message">File access is required to load images from your device.</string>
 </resources>

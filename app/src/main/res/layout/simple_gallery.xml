@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Sampled from android.platform.packages.apps.Gallery sourcecode.
+-->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <GridView
+        android:id="@+id/grid_view_images"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:numColumns="auto_fit"
+        android:columnWidth="128dp"
+        android:verticalSpacing="16dp"
+        android:stretchMode="spacingWidthUniform"
+        android:drawSelectorOnTop="false"
+        android:background="@color/colorBackground"
+        tools:context="nz.ac.massey.caigwatkin.simplegallery.SimpleGallery"/>
+
+</RelativeLayout>
