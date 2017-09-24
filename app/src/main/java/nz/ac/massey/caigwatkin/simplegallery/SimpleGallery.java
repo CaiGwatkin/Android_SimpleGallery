@@ -148,8 +148,8 @@ public class SimpleGallery extends Activity {
      * @return Array of objects: String[] imagePaths, ArrayList<Bitmap> thumbBitmapList
      */
     private Object[] getImages() {
-        final String[] columns = new String[]{MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME};
-        final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
+        final String[] columns = new String[]{ MediaStore.Images.Media.DATA };
+        final String orderBy = MediaStore.Images.Media.DATE_TAKEN + " DESC";
         final Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 columns, null, null, orderBy);
         final int THUMB_SIZE = 64;

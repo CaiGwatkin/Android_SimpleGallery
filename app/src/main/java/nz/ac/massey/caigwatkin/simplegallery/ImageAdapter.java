@@ -93,12 +93,10 @@ public class ImageAdapter extends BaseAdapter {
             convertView = mLayoutInflater.inflate(R.layout.grid_cell, null);
             imageView = (ImageView) convertView.findViewById(R.id.image_thumb);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setImageBitmap(mBitmapList.get(position));
         }
         else {
-            imageView = (ImageView) convertView.getTag();
-        }
-
-        if (imageView != null) {
+            imageView = (ImageView) convertView.findViewById(R.id.image_thumb);
             imageView.setImageBitmap(mBitmapList.get(position));
         }
         return convertView;
