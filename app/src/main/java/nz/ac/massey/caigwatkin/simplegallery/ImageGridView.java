@@ -23,7 +23,7 @@ public class ImageGridView extends GridView {
     /**
      * Stores paths to images shown as thumbnails.
      */
-    private String[] imagePaths;
+    private ArrayList<String> imagePaths;
 
     /**
      * Constructor from context.
@@ -34,7 +34,6 @@ public class ImageGridView extends GridView {
      */
     public ImageGridView(Context context) {
         super(context);
-
         init();
     }
 
@@ -48,7 +47,6 @@ public class ImageGridView extends GridView {
      */
     public ImageGridView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-
         init();
     }
 
@@ -59,7 +57,7 @@ public class ImageGridView extends GridView {
      */
     private void init() {
         Object[] temp = getImages();
-        this.imagePaths = (String[]) temp[0];
+        this.imagePaths = (ArrayList<String>) temp[0];
         ArrayList<Bitmap> thumbBitmapList = (ArrayList<Bitmap>) temp[1];
         setAdapter(new ImageAdapter(getContext(), thumbBitmapList));
         setOnItemClickListener(new OnItemClickListener() {
@@ -79,7 +77,7 @@ public class ImageGridView extends GridView {
      */
     private void openFullscreenImageActivity(int position) {
         Intent intent = new Intent(getContext(), FullscreenImage.class);
-        intent.putExtra("path", imagePaths[position]);
+        intent.putExtra("path", imagePaths.get(position));
         getContext().startActivity(intent);
     }
 
@@ -114,14 +112,14 @@ public class ImageGridView extends GridView {
             private void loadImages() {
                 Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         columns, null, null, orderBy);
-                String[] imagePaths = new String[cursor.getCount()];
+                ArrayList<String> imagePaths = new ArrayList<>();
                 ArrayList<Bitmap> thumbBitmapList = new ArrayList<>();
-                int length = imagePaths.length;
+                int length = cursor.getCount();
                 for (int i = 0; i < length; i++) {
                     cursor.moveToPosition(i);
                     int dataColumnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                    imagePaths[i] = cursor.getString(dataColumnIndex);
-                    thumbBitmapList.add(ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imagePaths[i]),
+                    imagePaths.add(i, cursor.getString(dataColumnIndex));
+                    thumbBitmapList.add(ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imagePaths.get(i)),
                             THUMB_SIZE, THUMB_SIZE));
                 }
                 objects[0] = imagePaths;
@@ -137,5 +135,14 @@ public class ImageGridView extends GridView {
             e.printStackTrace();
         }
         return objects;
+    }
+
+    /**
+     * Gets the image paths.
+     *
+     * @return Array list of image path strings.
+     */
+    public ArrayList<String> getImagePaths() {
+        return this.imagePaths;
     }
 }
