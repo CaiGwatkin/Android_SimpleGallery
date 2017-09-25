@@ -90,7 +90,7 @@ public class ImageGridView extends GridView {
      */
     private Object[] getImages() {
         final String[] columns = new String[]{ MediaStore.Images.Media.DATA };
-        final String orderBy = MediaStore.Images.Media.DATE_TAKEN + " DESC";
+        final String orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC";
         final int THUMB_SIZE = 148;
         final Object[] objects = new Object[2];
         Thread thread = new Thread(new Runnable() {
