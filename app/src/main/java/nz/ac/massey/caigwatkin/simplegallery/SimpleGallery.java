@@ -5,23 +5,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.widget.GridView;
-
-import java.util.ArrayList;
 
 /**
  * Simple Gallery class.
  *
  * Entry point for app. Displays a gallery of images stored on the device.
- *
- * @see
  */
 public class SimpleGallery extends Activity {
 
@@ -44,12 +34,24 @@ public class SimpleGallery extends Activity {
     /**
      * Starts the app.
      *
+     * Checks that permissions are granted before initialising application.
+     *
      * @param savedInstanceState Bundle from previous instance.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        checkPermissionsAndInit();
+    }
+
+    /**
+     * Resumes the app.
+     *
+     * Checks that permissions are granted before re-initialising application.
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
         checkPermissionsAndInit();
     }
 
@@ -72,8 +74,7 @@ public class SimpleGallery extends Activity {
      * Gets the images to be displayed in the gallery and sets up the adapter to display those images in the grid view.
      */
     private void init() {
-        setContentView(R.layout.simple_gallery);
-        //ImageGridView imageGridView = (ImageGridView) findViewById(R.id.grid_view_images);
+        setContentView(R.layout.activity_simple_gallery);
     }
 
     /**
@@ -83,8 +84,8 @@ public class SimpleGallery extends Activity {
      * not granted and a new request for that permission will be made.
      *
      * @param requestCode The code of the permission request.
-     * @param permissions The array of Strings relating t
-     * @param grantResults
+     * @param permissions The array of Strings relating to which permissions were requested.
+     * @param grantResults The list of ints specifying whether the permission was granted.
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
