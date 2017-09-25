@@ -8,7 +8,7 @@ Sampled from android.platform.packages.apps.Gallery sourcecode.
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <GridView
+    <nz.ac.massey.caigwatkin.simplegallery.ImageGridView
         android:id="@+id/grid_view_images"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

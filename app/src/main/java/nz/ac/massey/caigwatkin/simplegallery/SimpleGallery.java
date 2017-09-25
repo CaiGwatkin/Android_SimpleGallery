@@ -42,11 +42,6 @@ public class SimpleGallery extends Activity {
     }
 
     /**
-     * Stores paths to images shown as thumbnails in simple gallery view.
-     */
-    private String[] imagePaths;
-
-    /**
      * Starts the app.
      *
      * @param savedInstanceState Bundle from previous instance.
@@ -55,8 +50,6 @@ public class SimpleGallery extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.simple_gallery);
-
         checkPermissionsAndInit();
     }
 
@@ -79,15 +72,8 @@ public class SimpleGallery extends Activity {
      * Gets the images to be displayed in the gallery and sets up the adapter to display those images in the grid view.
      */
     private void init() {
-//        ArrayList<Bitmap> bitmapList = new ArrayList<>();
-//        //getImages();
-//        GridView imageGridView = (GridView) findViewById(R.id.grid_view_images);
-//        imageGridView.setAdapter(new ImageAdapter(this, bitmapList));
-        Object[] temp = getImages();
-        this.imagePaths = (String[]) temp[0];
-        ArrayList<Bitmap> bitmapList = (ArrayList<Bitmap>) temp[1];
-        GridView imageGridView = (GridView) findViewById(R.id.grid_view_images);
-        imageGridView.setAdapter(new ImageAdapter(this, bitmapList));
+        setContentView(R.layout.simple_gallery);
+        //ImageGridView imageGridView = (ImageGridView) findViewById(R.id.grid_view_images);
     }
 
     /**
@@ -134,60 +120,10 @@ public class SimpleGallery extends Activity {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Do nothing, permission will be requested when call button clicked again.
                         checkPermissionsAndInit();
                     }
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
-
-    /**
-     * Gets a all images from device as thumbnails and paths.
-     *
-     * @return Array of objects: String[] imagePaths, ArrayList<Bitmap> thumbBitmapList
-     */
-    private Object[] getImages() {
-        final String[] columns = new String[]{ MediaStore.Images.Media.DATA };
-        final String orderBy = MediaStore.Images.Media.DATE_TAKEN + " DESC";
-        final Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                columns, null, null, orderBy);
-        final int THUMB_SIZE = 64;
-        final String[] imagePaths = new String[cursor.getCount()];
-        final ArrayList<Bitmap> thumbBitmapList = new ArrayList<>();
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    int length = imagePaths.length;
-                    for (int i = 0; i < length; i++) {
-                        cursor.moveToPosition(i);
-                        int dataColumnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                        imagePaths[i] = cursor.getString(dataColumnIndex);
-                        thumbBitmapList.add(ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imagePaths[i]),
-                                THUMB_SIZE, THUMB_SIZE));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.start();
-        try {
-            thread.join();
-            cursor.close();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return new Object[]{imagePaths, thumbBitmapList};
-    }
-//
-//    private Bitmap urlImageToBitmap(String imageUrl) throws Exception {
-//        Bitmap result = null;
-//        URL url = new URL(imageUrl);
-//        if(url != null) {
-//            result = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-//        }
-//        return result;
-//    }
 }
