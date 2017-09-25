@@ -32,9 +32,9 @@ public class SimpleGallery extends Activity {
     }
 
     /**
-     * Starts the app.
+     * Creates the app.
      *
-     * Checks that permissions are granted before initialising application.
+     * Checks that permissions are granted before initialising activity.
      *
      * @param savedInstanceState Bundle from previous instance.
      */
@@ -45,14 +45,14 @@ public class SimpleGallery extends Activity {
     }
 
     /**
-     * Resumes the app.
+     * Loads images into grid view.
      *
-     * Checks that permissions are granted before re-initialising application.
+     * Extracted from onCreate() in order to ensure permissions granted before loading images from device.
      */
     @Override
-    protected void onResume() {
-        super.onResume();
-        checkPermissionsAndInit();
+    protected void onStart() {
+        super.onStart();
+        ((ImageGridView) findViewById(R.id.grid_view_images)).init();
     }
 
     /**

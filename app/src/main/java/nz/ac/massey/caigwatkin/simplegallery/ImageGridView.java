@@ -28,26 +28,20 @@ public class ImageGridView extends GridView {
     /**
      * Constructor from context.
      *
-     * Constructs view based on context, then calls init function.
-     *
      * @param context The context in which the view is created.
      */
     public ImageGridView(Context context) {
         super(context);
-        init();
     }
 
     /**
      * Constructor from context and attributes.
-     *
-     * Constructs view based on context and attributes, then calls init function.
      *
      * @param context The context in which the view is created.
      * @param attributeSet Attributes of the view.
      */
     public ImageGridView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-        init();
     }
 
     /**
@@ -55,7 +49,7 @@ public class ImageGridView extends GridView {
      *
      * Adds thumbnail image views to grid view. Sets up click listener to start new activity when thumbnail clicked.
      */
-    private void init() {
+    public void init() {
         Object[] temp = getImages();
         this.imagePaths = (ArrayList<String>) temp[0];
         ArrayList<Bitmap> thumbBitmapList = (ArrayList<Bitmap>) temp[1];
