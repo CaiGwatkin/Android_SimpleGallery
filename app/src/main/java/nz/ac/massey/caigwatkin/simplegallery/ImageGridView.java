@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
 
 import java.util.ArrayList;
@@ -20,19 +21,32 @@ import java.util.ArrayList;
  * Displays a grid view of images sourced from device folders.
  */
 public class ImageGridView extends GridView {
+
+    /**
+     * The size of thumbnails to display.
+     */
+    static int THUMB_SIZE = 148;
+
     /**
      * Stores paths to images shown as thumbnails.
      */
-    private ArrayList<String> imagePaths;
+    private final ArrayList<String> mImagePaths = new ArrayList<>();
+
+    private BaseAdapter mAdapter;
 
     /**
-     * Constructor from context.
-     *
-     * @param context The context in which the view is created.
+     * Stores thumbnail bitmaps for display;
      */
-    public ImageGridView(Context context) {
-        super(context);
-    }
+    private final ArrayList<Bitmap> mThumbBitmapList = new ArrayList<>();
+
+//    /**
+//     * Constructor from context.
+//     *
+//     * @param context The context in which the view is created.
+//     */
+//    public ImageGridView(Context context) {
+//        super(context);
+//    }
 
     /**
      * Constructor from context and attributes.
@@ -42,6 +56,8 @@ public class ImageGridView extends GridView {
      */
     public ImageGridView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
+        setAdapter(new ImageAdapter(getContext(), mThumbBitmapList));
+        mAdapter = (BaseAdapter) getAdapter();
     }
 
     /**
@@ -50,10 +66,7 @@ public class ImageGridView extends GridView {
      * Adds thumbnail image views to grid view. Sets up click listener to start new activity when thumbnail clicked.
      */
     public void init() {
-        Object[] temp = getImages();
-        this.imagePaths = (ArrayList<String>) temp[0];
-        ArrayList<Bitmap> thumbBitmapList = (ArrayList<Bitmap>) temp[1];
-        setAdapter(new ImageAdapter(getContext(), thumbBitmapList));
+        getImages();
         setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -71,20 +84,16 @@ public class ImageGridView extends GridView {
      */
     private void openFullscreenImageActivity(int position) {
         Intent intent = new Intent(getContext(), FullscreenImage.class);
-        intent.putExtra("path", imagePaths.get(position));
+        intent.putExtra("path", mImagePaths.get(position));
         getContext().startActivity(intent);
     }
 
     /**
      * Gets a all images from device as thumbnails and paths.
-     *
-     * @return Array of objects: String[] imagePaths, ArrayList<Bitmap> thumbBitmapList
      */
-    private Object[] getImages() {
+    private void getImages() {
         final String[] columns = new String[]{ MediaStore.Images.Media.DATA };
         final String orderBy = MediaStore.Images.Media.DATE_ADDED + " DESC";
-        final int THUMB_SIZE = 148;
-        final Object[] objects = new Object[2];
         Thread thread = new Thread(new Runnable() {
             /**
              * Attempts to load images.
@@ -106,18 +115,16 @@ public class ImageGridView extends GridView {
             private void loadImages() {
                 Cursor cursor = getContext().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                         columns, null, null, orderBy);
-                ArrayList<String> imagePaths = new ArrayList<>();
-                ArrayList<Bitmap> thumbBitmapList = new ArrayList<>();
                 int length = cursor.getCount();
                 for (int i = 0; i < length; i++) {
                     cursor.moveToPosition(i);
                     int dataColumnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);
-                    imagePaths.add(i, cursor.getString(dataColumnIndex));
-                    thumbBitmapList.add(ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(imagePaths.get(i)),
+                    String path = cursor.getString(dataColumnIndex);
+                    mImagePaths.add(i, path);
+                    mThumbBitmapList.add(ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(path),
                             THUMB_SIZE, THUMB_SIZE));
+                    mAdapter.notifyDataSetChanged();
                 }
-                objects[0] = imagePaths;
-                objects[1] = thumbBitmapList;
                 cursor.close();
             }
         });
@@ -128,15 +135,14 @@ public class ImageGridView extends GridView {
         catch (Exception e) {
             e.printStackTrace();
         }
-        return objects;
     }
 
-    /**
-     * Gets the image paths.
-     *
-     * @return Array list of image path strings.
-     */
-    public ArrayList<String> getImagePaths() {
-        return this.imagePaths;
-    }
+//    /**
+//     * Gets the image paths.
+//     *
+//     * @return Array list of image path strings.
+//     */
+//    public ArrayList<String> getImagePaths() {
+//        return this.mImagePaths;
+//    }
 }
