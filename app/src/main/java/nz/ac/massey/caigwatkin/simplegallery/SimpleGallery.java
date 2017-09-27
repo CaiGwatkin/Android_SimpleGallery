@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  * Simple Gallery class.
@@ -41,90 +42,79 @@ public class SimpleGallery extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkPermissionsAndInit();
     }
 
-    /**
-     * Loads images into grid view.
-     *
-     * Extracted from onCreate() in order to ensure permissions granted before loading images from device.
-     */
     @Override
-    protected void onStart() {
-        super.onStart();
-        ((ImageGridView) findViewById(R.id.grid_view_images)).init();
+    protected void onResume() {
+        super.onResume();
+        checkPermissions();
     }
 
     /**
      * Checks that required permissions are granted before either requesting those permissions or initialising the app.
      */
-    private void checkPermissionsAndInit() {
+    private void checkPermissions() {
         if (Build.VERSION.SDK_INT > 23 && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PermissionTypes.ESSENTIAL_PERMISSIONS.toInt());
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PermissionTypes.ESSENTIAL_PERMISSIONS.toInt());
         }
         else {
-            init();
+            initGridView();
         }
     }
 
-    /**
-     * Initialises the app.
-     *
-     * Gets the images to be displayed in the gallery and sets up the adapter to display those images in the grid view.
-     */
-    private void init() {
+    private void initGridView() {
         setContentView(R.layout.activity_simple_gallery);
+        ((ImageGridView) findViewById(R.id.grid_view_images)).init();
     }
 
-    /**
-     * Checks if required permissions were granted after they have been requested.
-     *
-     * Ensures that the all necessary permissions are granted. A dialogue box will be displayed if the permission was
-     * not granted and a new request for that permission will be made.
-     *
-     * @param requestCode The code of the permission request.
-     * @param permissions The array of Strings relating to which permissions were requested.
-     * @param grantResults The list of ints specifying whether the permission was granted.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        if(permissions.length == 0) {
-            finish();
-        }
-        else if (requestCode == PermissionTypes.ESSENTIAL_PERMISSIONS.toInt()) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                init();
-            }
-            else {
-                showPermissionRequiredDialogue(this.getString(R.string.essential_permission_message));
-            }
-        }
-    }
+//    /**
+//     * Checks if required permissions were granted after they have been requested.
+//     *
+//     * Ensures that the all necessary permissions are granted. A dialogue box will be displayed if the permission was
+//     * not granted and a new request for that permission will be made.
+//     *
+//     * @param requestCode The code of the permission request.
+//     * @param permissions The array of Strings relating to which permissions were requested.
+//     * @param grantResults The list of ints specifying whether the permission was granted.
+//     */
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+//        if (requestCode == PermissionTypes.ESSENTIAL_PERMISSIONS.toInt()) {
+//            if (permissions.length > 0 && grantResults[requestCode] == PackageManager.PERMISSION_GRANTED) {
+//                // Loops back to
+//                //initGridView();
+//            }
+////            else {
+////                //showPermissionRequiredDialogue(this.getString(R.string.essential_permission_message));
+////            }
+//        }
+//    }
 
-    /**
-     * Shows a dialogue box to user.
-     *
-     * To be called when permission is required but was not granted.
-     *
-     * @param message The message to be displayed.
-     */
-    private void showPermissionRequiredDialogue(String message) {
-        AlertDialog.Builder builder;
-        if (Build.VERSION.SDK_INT >= 21) {
-            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
-        } else {
-            builder = new AlertDialog.Builder(this);
-        }
-        builder.setTitle(this.getString(R.string.essential_permission_required))
-                .setMessage(message)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        checkPermissionsAndInit();
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
+//    /**
+//     * Shows a dialogue box to user.
+//     *
+//     * To be called when permission is required but was not granted.
+//     *
+//     * @param message The message to be displayed.
+//     */
+//    private void showPermissionRequiredDialogue(String message) {
+//        AlertDialog.Builder builder;
+//        if (Build.VERSION.SDK_INT >= 21) {
+//            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
+//        } else {
+//            builder = new AlertDialog.Builder(this);
+//        }
+//        builder.setTitle(this.getString(R.string.essential_permission_required))
+//                .setMessage(message)
+//                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        checkPermissions();
+//                    }
+//                })
+//                .setIcon(android.R.drawable.ic_dialog_alert)
+//                .show();
+//    }
 }
